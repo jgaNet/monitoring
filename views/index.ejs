@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+	  <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+	  <script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+	  <script src="/socket.io/socket.io.js"></script>
+	  <script type="text/javascript" src="/javascripts/main.js"></script>
+  </head>
+  <body>
+    <h1><%= title %></h1>
+
+    <% for(i = 0; i < JSON.parse(variables).length; i++) { %>
+
+      <form action="/exec" method="post">
+        <input type="hidden" name="id" class="id" value=<%- JSON.parse(variables)[i]._id %>>
+        <label for="cmd"><%= JSON.parse(variables)[i].name %></label>
+        <input type="text" name="cmd" class="cmd" value=<%= JSON.parse(variables)[i].value %>>
+        <input type="submit">
+      </form>
+
+    <% } %>
+
+    <h3>Errors</h3>
+    <div class="errors"></div>
+  </body>
+</html>
