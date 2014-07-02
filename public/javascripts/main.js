@@ -23,7 +23,7 @@ var user = new User(socket);
 
 
 $(document).ready(function(){
-    $(":submit").on("click", function(e){
+    $(".submit-values").on("click", function(e){
         e.preventDefault();
         user.socket.emit("exec", {
             id : $(this).parent().find(".id").val(),

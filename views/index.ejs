@@ -17,12 +17,28 @@
         <input type="hidden" name="id" class="id" value=<%- JSON.parse(variables)[i]._id %>>
         <label for="cmd"><%= JSON.parse(variables)[i].name %></label>
         <input type="text" name="cmd" class="cmd" value=<%= JSON.parse(variables)[i].value %>>
-        <input type="submit">
+        <input type="submit" class="submit-values">
       </form>
 
     <% } %>
 
+
+    <br />
+    
+    <form method="post" action="/sys_upload" enctype="multipart/form-data">
+      <label for="fsfile">Fichier (stockage fileSystem)</label><br />
+      <input type="file" name="fsfile" id="fsfile" />
+      <input type="submit" name="submit" value="Envoyer" />
+    </form>
+    <br />
+    <form method="post" action="/db_upload" enctype="multipart/form-data">
+      <label for="dbfile">Fichier (stockage bdd)</label><br />
+      <input type="file" name="dbfile" id="dbfile" />
+      <input type="submit" name="submit" value="Envoyer" />
+    </form>
+
     <h3>Errors</h3>
     <div class="errors"></div>
+
   </body>
 </html>
