@@ -1,5 +1,18 @@
-function Variable (name, value, Model) {
-    this.model = new Model({
+var mongoose = require('mongoose');
+
+var variableSchema = new mongoose.Schema({
+    name: String,
+    value: Number
+});
+var variableModel = mongoose.model('Variable', variableSchema);
+
+variableModel.remove({}, function(err){
+    console.log('collection remove');
+});
+
+
+function Variable (name, value) {
+    this.model = new variableModel({
         name : name,
         value : value
     });
@@ -14,4 +27,8 @@ Variable.prototype.update = function(value) {
     this.model.save();
 };
 
-module.exports = Variable;
+var createVariable = function (name, value) {
+    return new Variable(name, value);
+};
+
+module.exports = createVariable;

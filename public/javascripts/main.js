@@ -1,4 +1,12 @@
-var socket = io.connect('http://localhost');
+if(  document.addEventListener  ){ // > ie 9 
+    var transports = ['websocket', 'polling'];
+}else{
+    var transports = ['polling', 'websocket'];
+}
+
+var socket = io.connect('http://'+window.location.host, {
+    transports: transports
+});
 
 function User(socket) {
     this.socket = socket;

@@ -1,6 +1,5 @@
 var User = require("./user");
-var mongoose = require('mongoose');
-var Variable = require("./variable");
+var createVariable = require("./variable");
 
 function Core(app, io, db) {
     this.io = io;
@@ -12,6 +11,16 @@ function Core(app, io, db) {
     this.models = {};
     this.configure();
 }
+
+Core.prototype.configure = function() {
+    var core = this;
+
+    //test variable
+    core.variables["test"] = createVariable("test", 0);
+    core.variables["test2"] = createVariable("test2", 0);
+
+    core.events();
+};
 
 Core.prototype.events = function () {
     var core = this;
@@ -26,28 +35,6 @@ Core.prototype.sendToAll = function (event, data) {
     }
 };
 
-Core.prototype.configure = function() {
-    var core = this;
 
-    core.db.on("error", console.error);
-
-    core.db.once('open', function(){
-        core.schemas["variable"] = new mongoose.Schema({
-            name: String,
-            value: Number
-        });
-        core.models["variable"] = mongoose.model('Variable', core.schemas["variable"]);
-
-        core.models["variable"].remove({}, function(err){
-            console.log('collection remove');
-        });
-
-        //test variable
-        core.variables["test"] = new Variable("test", 0, core.models.variable);
-        core.variables["test2"] = new Variable("test2", 0, core.models.variable);
-    });
-
-    core.events();
-};
 
 module.exports = Core;

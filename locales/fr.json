@@ -1,0 +1,8 @@
+{
+	"editor" : "Editeur",
+	"monitor" : "Moniteur",
+	"files in filesystem" : "Fichier (stockage fileSystem)",
+	"files in bdd" : "Fichier (stockage bdd)",
+	"submit" : "Envoyer",
+	"errors" : "Erreurs"
+}

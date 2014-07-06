@@ -1,20 +1,25 @@
 #!/usr/bin/env node
-var debug = require('debug')('app');
-var app = require('../app');
-var Core = require('../core/core');
-
-
-
-app.set('port', process.env.PORT || 3000);
-
-var server = app.listen(app.get('port'), function() {
-  debug('Express server listening on port ' + server.address().port);
-});
 
 var mongoose = require('mongoose');
 var db = mongoose.connection;
 mongoose.connect('mongodb://localhost/monitoring');
 
-var io = require('socket.io')(server);
+db.once('open', function(){
+    console.log("db connected");
 
-var core = new Core(app, io, db);
+    var debug = require('debug')('app');
+    var app = require('../app');
+    var Core = require('../core/core');
+
+    app.set('port', process.env.PORT || 3000);
+
+    var server = app.listen(app.get('port'), function() {
+      debug('Express server listening on port ' + server.address().port);
+    });
+
+
+    var io = require('socket.io')(server);
+    var core = new Core(app, io, db);
+});
+
+db.on("error", console.error);

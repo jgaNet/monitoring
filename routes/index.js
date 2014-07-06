@@ -4,12 +4,9 @@ var mongoose = require('mongoose');
 var fs       = require('fs');
 var Grid     = require('gridfs-stream');
 var db       = mongoose.connection;
-var gfs;
+var gfs      = Grid(db.db, mongoose.mongo);;
 var settings = require("../settings");
-
-db.once('open', function(){
-     gfs  = Grid(db.db, mongoose.mongo);
-});
+var i18n     = require('i18n');
 
 
 var fileSchema = new mongoose.Schema({
@@ -23,7 +20,7 @@ var fileModel = mongoose.model('File', fileSchema);
 router.get('/', function(req, res) {
     mongoose.connection.db.collection('variables', {}, function(err, collection){
         collection.find().toArray(function(err, variables){
-            res.render('index', { title: 'Edit Variables', variables:  JSON.stringify(variables)});
+            res.render('index', { variables:  JSON.stringify(variables)});
         });
     });
 });
@@ -31,7 +28,7 @@ router.get('/', function(req, res) {
 router.get('/monitor', function(req, res) {
     mongoose.connection.db.collection('variables', {}, function(err, collection){
         collection.find().toArray(function(err, variables){
-            res.render('monitor', { title: 'Monitor', variables:  JSON.stringify(variables)});
+            res.render('monitor', { title: i18n.__('monitor'), variables:  JSON.stringify(variables)});
         });
     });
 });
@@ -90,6 +87,15 @@ router.get('/db_download', function(req, res){
 
     file.pipe(res);
 });
+
+router.get("/lang/:locale", setLocale);
+
+function setLocale(req, res, next){
+    req.session.locale = req.params.locale;
+    if(req.headers.referer) res.redirect(req.headers.referer);
+    else res.redirect("back");
+}
+
 
 
 

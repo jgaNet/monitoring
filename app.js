@@ -4,12 +4,23 @@ var favicon = require('static-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var session = require('express-session');
 var busboy = require('connect-busboy');
+var i18n = require('i18n');
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
 
 var app = express();
+
+i18n.configure({
+    locales: ['en', 'fr'],
+    directory: __dirname + '/locales',
+    defaultLocale: 'en',
+    cookie: 'locale'
+});
+
+
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -20,8 +31,23 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
 app.use(cookieParser());
+app.use(session({
+        secret: 'monitoring',
+        saveUninitialized: true,
+        resave: true
+    }
+));
 app.use(busboy());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(i18n.init);
+
+app.use(function(req, res, next){
+    console.log(req.session);
+    if(req.session.locale) //check if user has changed i18n settings
+        res.setLocale(req.session.locale);
+    next();
+})
+
 
 app.use('/', routes);
 app.use('/users', users);

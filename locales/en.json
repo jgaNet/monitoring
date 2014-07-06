@@ -1,0 +1,8 @@
+{
+	"editor" : "Editor",
+	"monitor" : "Monitor",
+	"files in filesystem" : "Files (Filesystem storage)",
+	"files in bdd" : "Files (Database storage)",
+	"submit" : "Submit",
+	"errors" : "Errors"
+}
