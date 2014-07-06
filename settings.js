@@ -1,5 +1,6 @@
 module.exports = {
     POST_MAX_SIZE : 40 , //MB
     UPLOAD_MAX_FILE_SIZE: 40, //MB
-    dirname : __dirname
+    dirname : __dirname,
+    uploadFolder : __dirname+"/public/files/"
 };

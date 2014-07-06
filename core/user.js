@@ -14,7 +14,6 @@ User.prototype.events = function () {
     });
 
     this.socket.on("exec", function (data){
-      console.log(data);
       var cmd = {
         main : "./bash/"+data.name+".sh",
         args : [data.value]

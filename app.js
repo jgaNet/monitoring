@@ -7,9 +7,13 @@ var bodyParser = require('body-parser');
 var session = require('express-session');
 var busboy = require('connect-busboy');
 var i18n = require('i18n');
+var passport = require('passport');
+var pass = require('./core/pass');
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
+var files = require('./routes/files');
+var sessions = require('./routes/sessions');
 
 var app = express();
 
@@ -37,20 +41,25 @@ app.use(session({
         resave: true
     }
 ));
+
+app.use(passport.initialize());
+app.use(passport.session());
+
 app.use(busboy());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(i18n.init);
 
 app.use(function(req, res, next){
-    console.log(req.session);
     if(req.session.locale) //check if user has changed i18n settings
         res.setLocale(req.session.locale);
     next();
-})
-
+});
 
 app.use('/', routes);
 app.use('/users', users);
+app.use('/files', files);
+app.use('/sessions', sessions);
+
 
 /// catch 404 and forward to error handler
 app.use(function(req, res, next) {
