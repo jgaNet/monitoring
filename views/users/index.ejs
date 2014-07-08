@@ -1,0 +1,8 @@
+<% for(i = 0; i < JSON.parse(users).length; i++) { %>
+  <div id=<%- JSON.parse(users)[i]._id %> >
+    <h3><%= JSON.parse(users)[i].username %></h3>
+    <a href="/users/show/<%= JSON.parse(users)[i]._id %>">show</a>
+    <a href="/users/edit/<%= JSON.parse(users)[i]._id %>">edit</a>
+    <a href="/users/delete/<%= JSON.parse(users)[i]._id %>">delete</a>
+  </div>
+<% } %>

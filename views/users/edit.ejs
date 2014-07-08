@@ -1,0 +1,25 @@
+<form action="/users/edit" method="post">
+    <input type="hidden" name="_id" value=<%= user._id %>></input>
+    <div>
+        <label>Username:</label>
+        <input type="text" name="username" value=<%= user.username %> ><br/>
+    </div>
+    <div>
+        <label>Email:</label>
+        <input type="text" name="email" value=<%= user.email %> ><br/>
+    </div>
+    <div>
+        <label>Password:</label>
+        <input type="password" name="password" />
+    </div>
+    <div>
+        <select name="trust" value=<%= user.trust %> >
+          <option value="0">Simple utilisateur</option>
+          <option value="1">Opérateur</option>
+          <option value="2">Admin</option>
+        </select>
+    </div>
+    <div>
+        <input type="submit" value="Créer"/>
+    </div>
+</form>

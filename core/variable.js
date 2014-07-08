@@ -7,7 +7,7 @@ var variableSchema = new mongoose.Schema({
 var variableModel = mongoose.model('Variable', variableSchema);
 
 variableModel.remove({}, function(err){
-    console.log('collection remove');
+    console.log('variables remove');
 });
 
 
@@ -27,8 +27,5 @@ Variable.prototype.update = function(value) {
     this.model.save();
 };
 
-var createVariable = function (name, value) {
-    return new Variable(name, value);
-};
 
-module.exports = createVariable;
+module.exports = Variable;

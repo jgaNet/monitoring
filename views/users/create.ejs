@@ -1,0 +1,24 @@
+<form action="/users/new" method="post">
+    <div>
+        <label>Username:</label>
+        <input type="text" name="username"/><br/>
+    </div>
+    <div>
+        <label>Email:</label>
+        <input type="text" name="email"/><br/>
+    </div>
+    <div>
+        <label>Password:</label>
+        <input type="password" name="password"/>
+    </div>
+    <div>
+        <select name="trust">
+          <option value="0">Simple utilisateur</option>
+          <option value="1">Opérateur</option>
+          <option value="2">Admin</option>
+        </select>
+    </div>
+    <div>
+        <input type="submit" value="Créer"/>
+    </div>
+</form>
