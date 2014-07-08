@@ -2,8 +2,12 @@
 
 var mongoose = require('mongoose');
 var db = mongoose.connection;
-mongoose.connect('mongodb://localhost/monitoring');
+var cookieParser = require('cookie-parser');
+var passportSocketIo = require("passport.socketio");
+var session = require('express-session');
+var MongoStore = require('connect-mongo')(session);
 
+mongoose.connect('mongodb://localhost/monitoring');
 db.once('open', function(){
     console.log("db connected");
 
@@ -19,6 +23,31 @@ db.once('open', function(){
 
 
     var io = require('socket.io')(server);
+
+    var onAuthorizeSuccess = function(data, accept) {
+        console.log("ok");
+        accept();
+    }
+
+    var onAuthorizeFail = function(data, message, error, accept) {
+        console.log("fail");
+        if(error) {
+            accept(new Error(message));
+        }
+    }
+
+    io.use(passportSocketIo.authorize({
+        cookieParser: cookieParser,
+        secret:      'monitoring',
+        key:         'express.sid',
+        store:        new MongoStore({
+                         mongoose_connection: mongoose.connection
+                      }),        
+        success:     onAuthorizeSuccess,
+        fail:        onAuthorizeFail
+    }));
+
+
     var core = new Core(app, io, db);
 });
 

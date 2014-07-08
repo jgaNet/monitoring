@@ -1,2 +1,12 @@
+<% if (typeof message !== "undefined") { %>
+<p><%= message %></p>
+<% } %>
+
 <p>Username: <%= user.username %></p>
 <p>Email: <%= user.email %></p>
+<p>Trust: <%= user.trust %></p>
+
+<% if (user.trust == 2) { %>
+	<a href="/users/new" />Créer un utilisateur</a>
+	<a href="/users/">Liste des utilisateurs</a>
+<% } %>

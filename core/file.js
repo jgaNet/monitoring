@@ -1,4 +1,4 @@
-var events = require('events');
+var events   = require('events');
 var mongoose = require('mongoose');
 var Grid     = require('gridfs-stream');
 var fs       = require('fs');
