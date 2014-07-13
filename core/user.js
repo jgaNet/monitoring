@@ -14,28 +14,34 @@ User.prototype.setSocket = function(socket) {
     this.events();
 }
 
-User.prototype.events = function () {
+User.prototype.events = function() {
     var user = this;
 
-    this.socket.on("disconnect", function(){
+    this.socket.on("disconnect", function() {
         user.disconnected = true;
-        setTimeout(function(){ // waiting reconnection before deleted 
-          if(user.disconnected){
-            delete user.core.users[user.params.username];
-          }
+        setTimeout(function() { // waiting reconnection before deleted 
+            if (user.disconnected) {
+                delete user.core.users[user.params.username];
+            }
         }, 10000);
     });
 
-    if(this.params.trust >= 1) {
-      this.socket.on("exec", function (data){
-        var cmd = {
-          main : "./bash/"+data.name+".sh",
-          args : [data.value]
-        };
+    if (this.params.trust >= 1) {
+        this.socket.on("exec", function(data) {
+            if (/^\d+$/.test(data.value)) {
+                var cmd = {
+                    main: "./bash/" + data.name + ".sh",
+                    args: [data.value]
+                };
 
-        var exec = new Exec(cmd, user, user.core.variables[data.name], data.value);
-        exec.launch();
-      });
+                var exec = new Exec(cmd, user, user.core.variables[data.name], data.value);
+                exec.launch();
+            } else {
+                user.socket.emit("exec stderr", {
+                    stderr: "value must be a number type"
+                });
+            }
+        });
     }
 
 };
