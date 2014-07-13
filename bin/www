@@ -2,53 +2,27 @@
 
 var mongoose = require('mongoose');
 var db = mongoose.connection;
-var cookieParser = require('cookie-parser');
-var passportSocketIo = require("passport.socketio");
-var session = require('express-session');
-var MongoStore = require('connect-mongo')(session);
+var settings = require("../settings");
 
-mongoose.connect('mongodb://localhost/monitoring');
-db.once('open', function(){
+mongoose.connect(settings.database.development);
+
+db.once('open', function() {
     console.log("db connected");
 
     var debug = require('debug')('app');
     var app = require('../app');
-    var Core = require('../core/core');
+
 
     app.set('port', process.env.PORT || 3000);
 
     var server = app.listen(app.get('port'), function() {
-      debug('Express server listening on port ' + server.address().port);
+        debug('Express server listening on port ' + server.address().port);
     });
 
+    var io = require("../config/socketio")(server);
+    var application = require('../config/application')(app, io, db);
 
-    var io = require('socket.io')(server);
-
-    var onAuthorizeSuccess = function(data, accept) {
-        console.log("ok");
-        accept();
-    }
-
-    var onAuthorizeFail = function(data, message, error, accept) {
-        console.log("fail");
-        if(error) {
-            accept(new Error(message));
-        }
-    }
-
-    io.use(passportSocketIo.authorize({
-        cookieParser: cookieParser,
-        secret:      'monitoring',
-        key:         'express.sid',
-        store:        new MongoStore({
-                         mongoose_connection: mongoose.connection
-                      }),        
-        success:     onAuthorizeSuccess,
-        fail:        onAuthorizeFail
-    }));
-
-
-    var core = new Core(app, io, db);
+    require("../tasks/seeds")(application);
 });
 
 db.on("error", console.error);

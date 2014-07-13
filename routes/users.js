@@ -1,112 +1,28 @@
-var express            = require('express');
-var router             = express.Router();
-var session_middleware = require('../utils/session_middleware');
-var pass               = require('../utils/pass');
-var userModel          = require('../utils/user_schema').userModel;
-var mongoose           = require('mongoose');
-var db                 = mongoose.connection.db;
-/* GET users listing. */
+var router = require('express').Router();
+var pass = require('../libs/passport');
+var applicationController = require('../app/controllers/application_controller');
+var userController = require("../app/controllers/users_controller");
 
-router.get('/login', session_middleware.getlogin);
-router.post('/login', session_middleware.postlogin);
-router.get('/logout', session_middleware.logout);
-router.get('/account', pass.ensureAuthenticated, session_middleware.account);
+router.get('/login', applicationController.getlogin);
 
+router.post('/login', applicationController.postlogin);
 
-router.get('/',
-    function(req, res, next){
-        pass.ensureAdmin(2, req, res, next);
-    }, 
-    function(req, res) {
-        db.collection('users', {}, function(err, collection){
-            collection.find().toArray(function(err, users) {
-                res.render('users/index', { 
-                    users:  JSON.stringify(users)
-                });
-            });
-        });
-    }
-);
+router.get('/logout', applicationController.logout);
 
-router.get('/show/:id',
-    function(req, res, next){
-        pass.ensureAdmin(2, req, res, next);
-    }, 
-    function(req, res) {
-        userModel.findOne({ "_id" : req.params.id }).exec(function(err, user) {
-            res.render('users/show', { 
-                user:  user
-            });
-        });
-    }
-);
+router.get('/account', pass.ensureAuthenticated, applicationController.account);
 
-router.get('/edit/:id',
-    function(req, res, next){
-        pass.ensureAdmin(2, req, res, next);
-    }, 
-    function(req, res) {
-        userModel.findOne({ "_id" : req.params.id }).exec(function(err, user) {
-            res.render('users/edit', { 
-                user:  user
-            });
-        });
-    }
-);
+router.get('/', pass.ensureAdmin, userController.index);
 
-router.post('/edit',
-    function(req, res, next){
-        pass.ensureAdmin(2, req, res, next);
-    }, 
-    function(req, res) {
-        userModel.findOne({ "_id" : req.body._id }).exec(function(err, user) {
-            
-            user.username = req.body.username;
-            user.email = req.body.email;
+router.get('/show/:id', pass.ensureAdmin, userController.show);
 
-            if(req.body.password !== "") {
-                user.password = req.body.password;
-            }
+router.get('/edit/:id', pass.ensureAdmin, userController.edit);
 
-            user.trust = req.body.trust;
-            user.save();
+router.post('/edit', pass.ensureAdmin, userController.update);
 
-            res.render('users/show', { 
-                user:  user
-            });
-        });
-    }
-);
+router.get('/delete/:id', pass.ensureAdmin, userController.delete);
 
-router.get('/delete/:id',
-    function(req, res, next){
-        pass.ensureAdmin(2, req, res, next);
-    }, 
-    function(req, res) {
-        userModel.findOne({ "_id" : req.params.id }).remove().exec(function(err) {
-            res.redirect("/users/");
-        });
-    }
-);
+router.get('/new', pass.ensureAdmin, userController.new);
 
-router.get('/new',
-    function(req, res, next){
-        pass.ensureAdmin(2, req, res, next);
-    }, 
-    function(req, res) {
-        res.render('users/create');
-    }
-);
-
-router.post('/new',
-    function(req, res, next){
-        pass.ensureAdmin(2, req, res, next);
-    }, 
-    function(req, res) {
-        var newUser = new userModel({ username: req.body.username , email: req.body.email , password: req.body.password, trust: parseInt(req.body.trust, 10) });
-        newUser.save();
-        res.send("utilisateur créé");
-    }
-);
+router.post('/new', pass.ensureAdmin, userController.create);
 
 module.exports = router;

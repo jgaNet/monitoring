@@ -9,10 +9,7 @@
     <script type="text/javascript" src="/javascripts/main.js"></script>
   </head>
   <body>
-    <ul>
-      <li><a href="/lang/fr">Fr</a></li>
-      <li><a href="/lang/en">En</a></li>
-    </ul>
+    <% include shared/nav %>
     <h1><%= __('monitor') %></h1>
     <div class="results"></div>
     <% for(i = 0; i < JSON.parse(variables).length; i++) { %>

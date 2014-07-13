@@ -1,6 +1,9 @@
 module.exports = {
-    POST_MAX_SIZE : 40 , //MB
-    UPLOAD_MAX_FILE_SIZE: 40, //MB
-    dirname : __dirname,
-    uploadFolder : __dirname+"/public/files/"
+    dirname: __dirname,
+    uploadFolder: __dirname + "/uploads/files/",
+    database: {
+        development: 'mongodb://localhost/monitoring',
+        production: 'mongodb://localhost/monitoring-prod',
+        test: 'mongodb://localhost/monitoring-test'
+    }
 };

@@ -15,10 +15,12 @@ function User(socket) {
 
 User.prototype.events = function() {
     this.socket.on('exec stdout', function(data) {
+        console.log(data);
         $("#" + data.stdout._id + " span").html(data.stdout.value);
     });
 
     this.socket.on('exec stderr', function(data) {
+        console.log(data);
         $(".errors").append(data.stderr);
     });
 

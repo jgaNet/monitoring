@@ -1,70 +1,30 @@
 var express = require('express');
-var path = require('path');
+
 var favicon = require('static-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-var session = require('express-session');
 var busboy = require('connect-busboy');
-var i18n = require('i18n');
-var passport = require('passport');
-var mongoose = require('mongoose');
-var MongoStore = require('connect-mongo')(session);
 
-var pass = require('./utils/pass');
-var routes = require('./routes/index');
-var users = require('./routes/users');
-var files = require('./routes/files');
 
 var app = express();
 
-i18n.configure({
-    locales: ['en', 'fr'],
-    directory: __dirname + '/locales',
-    defaultLocale: 'en',
-    cookie: 'locale'
-});
-
-
-
 // view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'ejs');
 
 app.use(favicon());
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
 app.use(cookieParser());
-app.use(session({
-        secret: 'monitoring',
-        key: 'express.sid',
-        saveUninitialized: true,
-        resave: true,
-        store : new MongoStore({
-            mongoose_connection: mongoose.connection
-        })
-    }
-));
-
-app.use(passport.initialize());
-app.use(passport.session());
-
 app.use(busboy());
-app.use(express.static(path.join(__dirname, 'public')));
-app.use(i18n.init);
 
-app.use(function(req, res, next){
-    if(req.session.locale) {
-    //check if user has changed i18n settings
-        res.setLocale(req.session.locale);
-    }
-    next();
-});
+require("./config/session")(app);
 
-app.use('/', routes);
-app.use('/users', users);
-app.use('/files', files);
+require("./config/passport")(app);
+
+require("./config/i18n")(app);
+
+require("./config/routes")(app, express);
 
 
 /// catch 404 and forward to error handler

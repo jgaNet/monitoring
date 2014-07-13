@@ -1,3 +1,5 @@
+<% include ../shared/nav %>
+
 <% for(i = 0; i < JSON.parse(users).length; i++) { %>
   <div id=<%- JSON.parse(users)[i]._id %> >
     <h3><%= JSON.parse(users)[i].username %></h3>
