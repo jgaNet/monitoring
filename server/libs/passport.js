@@ -1,6 +1,6 @@
 var passport = require('passport'),
     LocalStrategy = require('passport-local').Strategy,
-    User = require("../app/models/user");
+    User = require("../models/user");
 
 passport.use(new LocalStrategy(function(username, password, done) {
     User.findOne({
@@ -47,7 +47,7 @@ exports.ensureAuthenticated = function ensureAuthenticated(req, res, next) {
     if (req.isAuthenticated()) {
         return next();
     }
-    res.redirect('/users/login');
+    res.redirect('/login');
 };
 
 exports.ensureOperator = function ensureOperator(req, res, next) {

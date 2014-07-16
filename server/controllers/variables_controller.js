@@ -9,7 +9,6 @@ VariablesController.prototype.create = function(name, value) {
     });
 
     variable.save(function(err, variable) {
-        console.log(err, variable);
         if (err) return console.error(error);
     });
 

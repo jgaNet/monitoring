@@ -18,13 +18,14 @@ app.use(bodyParser.urlencoded());
 app.use(cookieParser());
 app.use(busboy());
 
-require("./config/session")(app);
+require("./session")(app);
 
-require("./config/passport")(app);
+require("./passport")(app);
 
-require("./config/i18n")(app);
+require("./i18n")(app);
 
-require("./config/routes")(app, express);
+
+require("./routes")(app, express);
 
 
 /// catch 404 and forward to error handler

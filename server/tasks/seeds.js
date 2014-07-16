@@ -1,6 +1,6 @@
-var User = require("../app/models/user");
-var Variable = require("../app/models/variable");
-var variablesController = require("../app/controllers/variables_controller");
+var User = require("../models/user");
+var Variable = require("../models/variable");
+var variablesController = require("../controllers/variables_controller");
 
 module.exports = function(application) {
     User.remove({}, function(err) {

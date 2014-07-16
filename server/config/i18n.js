@@ -1,9 +1,9 @@
 var i18n = require('i18n');
-var settings = require("../settings");
+var settings = require("../../settings");
 
 i18n.configure({
     locales: ['en', 'fr'],
-    directory: settings.dirname + '/locales',
+    directory: settings.serverFolder + '/locales',
     defaultLocale: 'en',
     cookie: 'locale'
 });

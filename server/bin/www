@@ -2,7 +2,7 @@
 
 var mongoose = require('mongoose');
 var db = mongoose.connection;
-var settings = require("../settings");
+var settings = require("../../settings");
 
 mongoose.connect(settings.database.development);
 
@@ -10,7 +10,7 @@ db.once('open', function() {
     console.log("db connected");
 
     var debug = require('debug')('app');
-    var app = require('../app');
+    var app = require('../config/application');
 
 
     app.set('port', process.env.PORT || 3000);
@@ -20,9 +20,10 @@ db.once('open', function() {
     });
 
     var io = require("../config/socketio")(server);
-    var application = require('../config/application')(app, io, db);
+    var applicationController = require('../controllers/application_controller');
+    applicationController.configure(app, io, db);
 
-    require("../tasks/seeds")(application);
+    require("../tasks/seeds")(applicationController);
 });
 
 db.on("error", console.error);

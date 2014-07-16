@@ -1,4 +1,4 @@
-var Exec = require("../../libs/exec");
+var Exec = require("../libs/exec");
 var User = require("../models/user");
 
 function UsersController() {}
@@ -8,7 +8,7 @@ UsersController.prototype.connection = function(user) {
         user.disconnected = true;
         setTimeout(function() { // waiting reconnection before deleted 
             if (user.disconnected) {
-                delete user.core.users[user.params.username];
+                delete user.app.users[user.params.username];
             }
         }, 10000);
     });
@@ -17,11 +17,11 @@ UsersController.prototype.connection = function(user) {
         user.socket.on("exec", function(data) {
             if (/^\d+$/.test(data.value)) {
                 var cmd = {
-                    main: "./bash/" + data.name + ".sh",
+                    main: "./server/bash/" + data.name + ".sh",
                     args: [data.value]
                 };
 
-                var exec = new Exec(cmd, user, user.core.variables[data.name], data.value);
+                var exec = new Exec(cmd, user, user.app.variables[data.name], data.value);
                 exec.launch();
             } else {
                 user.socket.emit("exec stderr", {
@@ -111,7 +111,11 @@ UsersController.prototype.create = function(req, res) {
     });
 };
 
-
+UsersController.prototype.account = function(req, res) {
+    res.render('users/account', {
+        user: req.user
+    });
+};
 
 
 module.exports = new UsersController();

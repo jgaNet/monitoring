@@ -2,7 +2,6 @@ var mongoose = require('mongoose'),
     bcrypt = require('bcrypt'),
     SALT_WORK_FACTOR = 10;
 
-//******* Database schema TODO add more validation
 var Schema = mongoose.Schema;
 
 var userSchema = new Schema({

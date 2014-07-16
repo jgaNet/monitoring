@@ -1,15 +1,9 @@
 var router = require('express').Router();
-var pass = require('../libs/passport');
-var applicationController = require('../app/controllers/application_controller');
-var userController = require("../app/controllers/users_controller");
+var pass = require('../server/libs/passport');
+var applicationController = require('../server/controllers/application_controller');
+var userController = require("../server/controllers/users_controller");
 
-router.get('/login', applicationController.getlogin);
-
-router.post('/login', applicationController.postlogin);
-
-router.get('/logout', applicationController.logout);
-
-router.get('/account', pass.ensureAuthenticated, applicationController.account);
+router.get('/account', pass.ensureAuthenticated, userController.account);
 
 router.get('/', pass.ensureAdmin, userController.index);
 

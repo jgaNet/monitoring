@@ -1,6 +1,6 @@
 var router = require('express').Router();
-var pass = require('../libs/passport');
-var filesController = require("../app/controllers/files_controller");
+var pass = require('../server/libs/passport');
+var filesController = require("../server/controllers/files_controller");
 
 router.all('/', pass.ensureAuthenticated);
 
