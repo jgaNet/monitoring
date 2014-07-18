@@ -4,8 +4,11 @@ var passport = require('passport'),
 
 passport.use(new LocalStrategy(function(username, password, done) {
     User.findOne({
-        username: username
+        where: {
+            username: username
+        }
     }, function(err, user) {
+
         if (err) {
             return done(err);
         }
@@ -17,6 +20,7 @@ passport.use(new LocalStrategy(function(username, password, done) {
         }
 
         user.comparePassword(password, function(err, isMatch) {
+
             if (err) return done(err);
             if (isMatch) {
                 return done(null, user);
@@ -35,7 +39,9 @@ passport.serializeUser(function(user, done) {
 
 passport.deserializeUser(function(id, done) {
     User.findOne({
-        "_id": id
+        where: {
+            id: id
+        }
     }, function(err, user) {
         done(err, user);
     });
@@ -51,7 +57,7 @@ exports.ensureAuthenticated = function ensureAuthenticated(req, res, next) {
 };
 
 exports.ensureOperator = function ensureOperator(req, res, next) {
-    if (req.user && req.user.trust >= 1) {
+    if (req.user && req.user.trust >= 2) {
         next();
     } else {
         res.send(403);
@@ -59,7 +65,7 @@ exports.ensureOperator = function ensureOperator(req, res, next) {
 };
 
 exports.ensureAdmin = function ensureAdmin(req, res, next) {
-    if (req.user && req.user.trust >= 2) {
+    if (req.user && req.user.trust >= 3) {
         next();
     } else {
         res.send(403);

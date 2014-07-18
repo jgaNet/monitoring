@@ -10,7 +10,7 @@ module.exports = function(application) {
             username: "admin",
             email: "admin@test.fr",
             password: "password",
-            trust: 2
+            trust: 3
         });
         admin.save(function(err) {
             if (err) {
@@ -24,7 +24,7 @@ module.exports = function(application) {
             username: "operator",
             email: "operator@test.fr",
             password: "password",
-            trust: 1
+            trust: 2
         });
 
         operator.save(function(err) {
@@ -39,8 +39,9 @@ module.exports = function(application) {
             username: "user",
             email: "user@test.fr",
             password: "password",
-            trust: 0
+            trust: 1
         });
+
         user.save(function(err) {
             if (err) {
                 console.log(err);

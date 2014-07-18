@@ -1,9 +1,11 @@
-var Exec = require("../libs/exec");
 var User = require("../models/user");
+var variablesController = require("../controllers/variables_controller");
 
 function UsersController() {}
 
 UsersController.prototype.connection = function(user) {
+    var controller = this;
+
     user.socket.on("disconnect", function() {
         user.disconnected = true;
         setTimeout(function() { // waiting reconnection before deleted 
@@ -13,23 +15,6 @@ UsersController.prototype.connection = function(user) {
         }, 10000);
     });
 
-    if (user.params.trust >= 1) {
-        user.socket.on("exec", function(data) {
-            if (/^\d+$/.test(data.value)) {
-                var cmd = {
-                    main: "./server/bash/" + data.name + ".sh",
-                    args: [data.value]
-                };
-
-                var exec = new Exec(cmd, user, user.app.variables[data.name], data.value);
-                exec.launch();
-            } else {
-                user.socket.emit("exec stderr", {
-                    stderr: "value must be a number type"
-                });
-            }
-        });
-    }
 };
 
 UsersController.prototype.reconnection = function(user, socket) {
@@ -38,8 +23,11 @@ UsersController.prototype.reconnection = function(user, socket) {
     this.connection(user);
 };
 
+
+
+
 UsersController.prototype.index = function(req, res) {
-    User.find().exec(function(err, users) {
+    User.all(function(err, users) {
         res.render('users/index', {
             users: JSON.stringify(users)
         });
@@ -48,8 +36,10 @@ UsersController.prototype.index = function(req, res) {
 
 UsersController.prototype.show = function(req, res) {
     User.findOne({
-        "_id": req.params.id
-    }).exec(function(err, user) {
+        where: {
+            "id": req.params.id
+        }
+    }, function(err, user) {
         res.render('users/show', {
             user: user
         });
@@ -58,8 +48,10 @@ UsersController.prototype.show = function(req, res) {
 
 UsersController.prototype.edit = function(req, res) {
     User.findOne({
-        "_id": req.params.id
-    }).exec(function(err, user) {
+        where: {
+            "id": req.params.id
+        }
+    }, function(err, user) {
         res.render('users/edit', {
             user: user
         });
@@ -67,29 +59,38 @@ UsersController.prototype.edit = function(req, res) {
 };
 
 UsersController.prototype.update = function(req, res) {
-    User.findOne({
-        "_id": req.body._id
-    }).exec(function(err, user) {
-        user.username = req.body.username;
-        user.email = req.body.email;
 
-        if (req.body.password !== "") {
-            user.password = req.body.password;
+    User.findOne({
+        where: {
+            "id": req.body.id
+        }
+    }, function(err, user) {
+
+        var userUpdate = {
+            username: req.body.username,
+            email: req.body.email,
+            trust: req.body.trust
         }
 
-        user.trust = req.body.trust;
-        user.save(function() {
+        if (req.body.password) {
+            userUpdate["password"] = req.body.password
+        }
+
+        user.updateAttributes(userUpdate, function(err, user) {
             res.render('users/show', {
                 user: user
             });
         });
+
     });
 };
 
 UsersController.prototype.delete = function(req, res) {
-    User.findOne({
-        "_id": req.params.id
-    }).remove().exec(function(err) {
+    User.remove({
+        where: {
+            "id": req.params.id
+        }
+    }, function(err) {
         res.redirect("/users/");
     });
 };

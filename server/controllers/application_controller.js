@@ -1,6 +1,5 @@
 var passport = require('passport');
 var userController = require("./users_controller");
-var variablesController = require("./variables_controller");
 var application;
 
 function ApplicationController() {
@@ -14,10 +13,10 @@ ApplicationController.prototype.configure = function(app, io, db) {
     this.io = io;
     this.app = app;
     this.db = db;
-    this.events();
+    this.socketConnection();
 };
 
-ApplicationController.prototype.events = function() {
+ApplicationController.prototype.socketConnection = function() {
     var app = this;
     app.io.on('connection', function(socket) {
         var user = socket.request.user;
@@ -70,13 +69,16 @@ ApplicationController.prototype.postlogin = function(req, res, next) {
 
             return res.redirect('/users/account');
         });
+
     })(req, res, next);
 };
 
 ApplicationController.prototype.logout = function(req, res) {
     req.logout();
+    req.session.destroy
     res.redirect('/');
 };
+
 
 var application = new ApplicationController();
 

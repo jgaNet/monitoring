@@ -12,11 +12,10 @@
     <% include shared/nav %>
     <h1><%= __('editor') %></h1>
     
-
     <% for(i = 0; i < JSON.parse(variables).length; i++) { %>
 
-      <form action="/exec" method="post">
-        <input type="hidden" name="id" class="id" value=<%- JSON.parse(variables)[i]._id %>>
+      <form action="/variables/<%- JSON.parse(variables)[i].id %>/exec" method="post">
+        <input type="hidden" name="id" class="id" value=<%- JSON.parse(variables)[i].id %>>
         <label for="cmd"><%= JSON.parse(variables)[i].name %></label>
         <input type="text" name="cmd" class="cmd" value=<%= JSON.parse(variables)[i].value %>>
         <input type="submit" class="submit-values">
@@ -32,15 +31,13 @@
       <input type="file" name="fsfile" id="fsfile" />
       <input type="submit" name="submit" value=<%= __('submit') %> />
     </form>
+
     <br />
-    <form method="post" action="/files/db_upload" enctype="multipart/form-data">
-      <label for="dbfile"><%= __('files in bdd') %></label><br />
-      <input type="file" name="dbfile" id="dbfile" />
-      <input type="submit" name="submit" value=<%= __('submit') %> />
-    </form>
 
     <h3><%= __('errors') %></h3>
     <div class="errors"></div>
+    <h3>Infos</h3>
+    <div class="message"></div>
 
   </body>
 </html>

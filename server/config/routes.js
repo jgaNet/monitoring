@@ -4,6 +4,7 @@ var settings = require("../../settings");
 var home = require(settings.routesFolder + 'home');
 var users = require(settings.routesFolder + 'users');
 var files = require(settings.routesFolder + 'files');
+var variables = require(settings.routesFolder + 'variables');
 
 var config = function(app, express) {
 
@@ -15,6 +16,7 @@ var config = function(app, express) {
     app.use('/', home);
     app.use('/users', users);
     app.use('/files', files);
+    app.use('/variables', variables);
 };
 
 

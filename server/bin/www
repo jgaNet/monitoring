@@ -1,29 +1,20 @@
 #!/usr/bin/env node
 
-var mongoose = require('mongoose');
-var db = mongoose.connection;
-var settings = require("../../settings");
+var dbSchema = require('../config/db')
 
-mongoose.connect(settings.database.development);
-
-db.once('open', function() {
-    console.log("db connected");
-
-    var debug = require('debug')('app');
-    var app = require('../config/application');
+var debug = require('debug')('app');
+var app = require('../config/application');
 
 
-    app.set('port', process.env.PORT || 3000);
+app.set('port', process.env.PORT || 3000);
 
-    var server = app.listen(app.get('port'), function() {
-        debug('Express server listening on port ' + server.address().port);
-    });
-
-    var io = require("../config/socketio")(server);
-    var applicationController = require('../controllers/application_controller');
-    applicationController.configure(app, io, db);
-
-    require("../tasks/seeds")(applicationController);
+var server = app.listen(app.get('port'), function() {
+    debug('Express server listening on port ' + server.address().port);
 });
 
-db.on("error", console.error);
+var io = require("../config/socketio")(server);
+var applicationController = require('../controllers/application_controller');
+
+applicationController.configure(app, io, dbSchema);
+
+require("../tasks/seeds")(applicationController);

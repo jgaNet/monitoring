@@ -1,6 +1,5 @@
 var session = require('express-session');
-var mongoose = require('mongoose');
-var MongoStore = require('connect-mongo')(session);
+var CaminteStore = require('connect-caminte')(session);
 
 var config = function(app) {
     app.use(session({
@@ -8,8 +7,12 @@ var config = function(app) {
         key: 'express.sid',
         saveUninitialized: true,
         resave: true,
-        store: new MongoStore({
-            mongoose_connection: mongoose.connection
+        store: new CaminteStore({
+            driver: 'redis',
+            collection: 'monitoring',
+            db: {
+                database: "./db/monitoring.db"
+            }
         })
     }));
 };

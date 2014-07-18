@@ -1,10 +1,8 @@
-var mongoose = require('mongoose');
+var schema = require('../config/db');
 
-var fileSchema = new mongoose.Schema({
+var File = schema.define('File', {
     name: String,
     path: String
 });
 
-
-var File = mongoose.model('File', fileSchema);
 module.exports = File;

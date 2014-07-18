@@ -1,36 +1,36 @@
-var mongoose = require('mongoose'),
-    bcrypt = require('bcrypt'),
-    SALT_WORK_FACTOR = 10;
+var schema = require('../config/db');
+bcrypt = require('bcrypt'),
+SALT_WORK_FACTOR = 10;
 
-var Schema = mongoose.Schema;
 
-var userSchema = new Schema({
+var User = schema.define("User", {
     username: {
-        type: String,
-        required: true,
-        unique: true
+        type: schema.String,
+        index: true
     },
-    email: {
-        type: String,
-        required: true,
-        unique: true
-    },
+    email: String,
     password: {
-        type: String,
-        required: true
+        type: schema.String,
+        index: true
     },
-    trust: {
-        type: Number,
-        required: true
-    }
+    trust: Number
 });
 
+User.validatesPresenceOf('username', 'email', 'password', 'trust');
 
-userSchema.pre('save', function(next) {
+User.validatesUniquenessOf('username', {
+    message: 'email is not unique'
+});
+User.validatesUniquenessOf('password', {
+    message: 'password is not unique'
+});
+
+User.beforeSave = function(next) {
     var user = this;
-    if (!user.isModified('password')) {
+
+    /*if (!user.isModified('password')) {
         return next();
-    }
+    }*/
 
     bcrypt.genSalt(SALT_WORK_FACTOR, function(err, salt) {
         if (err) {
@@ -43,17 +43,18 @@ userSchema.pre('save', function(next) {
             next();
         });
     });
-});
+};
 
-userSchema.methods.comparePassword = function(candidatePassword, cb) {
+User.prototype.comparePassword = function(candidatePassword, cb) {
+
     bcrypt.compare(candidatePassword, this.password, function(err, isMatch) {
         if (err) {
             return cb(err)
         };
+
         cb(null, isMatch);
     });
 };
 
-var User = mongoose.model('User', userSchema);
 
 module.exports = User;

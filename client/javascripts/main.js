@@ -15,13 +15,11 @@ function User(socket) {
 
 User.prototype.events = function() {
     this.socket.on('exec stdout', function(data) {
-        console.log(data);
-        $("#" + data.stdout._id + " span").html(data.stdout.value);
+        $("#" + data.stdout.id + " span").html(data.stdout.value);
     });
 
     this.socket.on('exec stderr', function(data) {
-        console.log(data);
-        $(".errors").append(data.stderr);
+        $(".errors").html(data.stderr);
     });
 
     /*this.socket.on('exec close', function (data){
@@ -35,16 +33,19 @@ var user = new User(socket);
 $(document).ready(function() {
     $(".submit-values").on("click", function(e) {
         e.preventDefault();
-        var value = $(this).parent().find(".cmd").val();
 
-        //if (/^\d+$/.test(value)) {
-        user.socket.emit("exec", {
+        $.post($(this).parent().attr("action"), {
             id: $(this).parent().find(".id").val(),
             name: $(this).parent().find("label").html(),
             value: $(this).parent().find(".cmd").val()
+        }, function(responce) {
+            if (responce.error) {
+                $(".errors").html(responce.error);
+            }
+            if (responce.message) {
+                $(".message").html(responce.message);
+            }
         });
-        /*} else {
-            $(".errors").html("value must be a number type");
-        }*/
+
     });
 });

@@ -2,7 +2,7 @@ var mongoose = require('mongoose');
 var cookieParser = require('cookie-parser');
 var passportSocketIo = require("passport.socketio");
 var session = require('express-session');
-var MongoStore = require('connect-mongo')(session);
+var CaminteStore = require('connect-caminte')(session);
 
 var onAuthorizeSuccess = function(data, accept) {
     accept();
@@ -20,8 +20,12 @@ var config = function(server) {
         cookieParser: cookieParser,
         secret: 'monitoring',
         key: 'express.sid',
-        store: new MongoStore({
-            mongoose_connection: mongoose.connection
+        store: new CaminteStore({
+            driver: 'redis',
+            collection: 'monitoring',
+            db: {
+                database: "./db/monitoring.db"
+            }
         }),
         success: onAuthorizeSuccess,
         fail: onAuthorizeFail
